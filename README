@@ -1,0 +1,8 @@
+Biophandria is a project being made for Jack Holmer's interactive exposition. 
+	libraries being used:
+		Gestalt - grabed from github : https://github.com/TheProduct/Gestalt.git
+		Processing and its OpenGL library: http://processing.org
+		Toxilibs - http://toxiclibs.org
+		QTJava - http://www.apple.com/quicktime/
+	
+thanks for these nice libraries!
