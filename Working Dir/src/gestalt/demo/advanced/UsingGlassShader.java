@@ -36,21 +36,21 @@ public class UsingGlassShader
         /* create shadermanager and a shaderprogram */
         _myShaderManager = drawablefactory().extensions().shadermanager();
         _myShaderProgram = _myShaderManager.createShaderProgram();
-        _myShaderManager.attachVertexShader(_myShaderProgram, Resource.getStream("demo/shader/RefractionReflectionShader.vs"));
-        _myShaderManager.attachFragmentShader(_myShaderProgram, Resource.getStream("demo/shader/RefractionReflectionShader.fs"));
+        _myShaderManager.attachVertexShader(_myShaderProgram, Resource.getStream("resource/data/demo/shader/RefractionReflectionShader.vs"));
+        _myShaderManager.attachFragmentShader(_myShaderProgram, Resource.getStream("resource/data/demo/shader/RefractionReflectionShader.fs"));
         bin(BIN_FRAME_SETUP).add(_myShaderManager);
 
         /* create textures */
         TexturePlugin myRefractionTexture = drawablefactory().texture();
-        myRefractionTexture.load(Bitmaps.getBitmap(Resource.getPath("demo/common/cube.png")));
+        myRefractionTexture.load(Bitmaps.getBitmap(Resource.getPath("resource/data/demo/common/cube.png")));
         myRefractionTexture.setTextureUnit(GL.GL_TEXTURE1);
 
         TexturePlugin myReflectionTexture = drawablefactory().texture();
-        myReflectionTexture.load(Bitmaps.getBitmap(Resource.getPath("demo/common/sky-reflection.png")));
+        myReflectionTexture.load(Bitmaps.getBitmap(Resource.getPath("resource/data/demo/common/sky-reflection.png")));
         myReflectionTexture.setTextureUnit(GL.GL_TEXTURE0);
 
         /* create model */
-        ModelData myModelData = ModelLoaderOBJ.getModelData(Resource.getStream("demo/common/weirdobject.obj"));
+        ModelData myModelData = ModelLoaderOBJ.getModelData(Resource.getStream("resource/data/demo/common/weirdobject.obj"));
         myModelData.averageNormals();
         Model myModel = G.model(myModelData);
         myModel.mesh().material().lit = true;
@@ -59,7 +59,7 @@ public class UsingGlassShader
         myModel.mesh().material().addPlugin(new ShaderMaterial());
 
         /* create background */
-        Plane myPlane = G.plane(bin(BIN_2D_BACKGROUND), Resource.getPath("demo/common/cube.png"));
+        Plane myPlane = G.plane(bin(BIN_2D_BACKGROUND), Resource.getPath("resource/data/demo/common/cube.png"));
         myPlane.setPlaneSizeToTextureSize();
         myPlane.rotation().set(PI, 0, 0);
         myPlane.material().depthmask = false;
