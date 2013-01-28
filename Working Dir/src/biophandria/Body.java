@@ -165,7 +165,7 @@ public class Body {
 	// MAIN METHODO TO RUN METHODOS
 
 	// RUN
-	// TODO: passar métodos para decisões na classe Creature
+	// TODO: passar métodos para decisões na classe Creature que será controlado pela classe Decision
 	// TODO: implementar outros métodos de movimentação
 	public void run(ArrayList<Creature> creatures) {
 		// TODO: criat métodos para debug visual

@@ -28,6 +28,13 @@ import processing.core.PVector;
 
 import mathematik.*;
 
+/*
+//TODO:
+    // UTILIZAR MAIS DE UM "BRAIN" PARA SEPARAR FUNCIONALIDADES
+	// movementCortex = new Brain(dna);
+	// socialCortex = new Brain(dna);
+	// enviromentCortex = new Brain(dna);
+ */
 public class Creature {
 	PApplet p;
 	
@@ -43,8 +50,8 @@ public class Creature {
 	private DNA dna;// toda criatura tem suas características herdadas.
 	private Brain brain;
 	
-	// Decision decision;
-	// ArrayList<Decision> otherDecision;
+	Decision decision;
+	ArrayList<Decision> otherDecision;
 
 	private int brainInput;
 	private int brainHidden;
@@ -121,8 +128,8 @@ public class Creature {
 		haveLeg = _leg;
 		haveReproductive = _reproductive;
 
-		//decision = new Decision();
-		//otherDecision = new ArrayList<Decision>();
+		decision = new Decision();
+		otherDecision = new ArrayList<Decision>();
 
 		// //toda criatura tem um corpo físico com habilidades de movimento
 		bodyCopy = new Body(p, dna, loc, vel, acc, id);
@@ -174,8 +181,8 @@ public class Creature {
 
 		//haveShape = false;
 
-		//decision = new Decision();
-		//otherDecision = new ArrayList<Decision>();
+		decision = new Decision();
+		otherDecision = new ArrayList<Decision>();
 
 		// //toda criatura tem um corpo físico
 		bodyCopy = new Body(p, dna, loc, vel, acc, id);
@@ -231,8 +238,8 @@ public class Creature {
 		haveLeg = _leg;
 		haveReproductive = _reproductive;
 
-		//decision = new Decision();
-		//otherDecision = new ArrayList<Decision>();
+		decision = new Decision();
+		otherDecision = new ArrayList<Decision>();
 
 		// //toda criatura tem um corpo físico com habilidades de movimento
 		bodyCopy = new Body(p, dna, loc, vel, acc, id);
@@ -290,42 +297,80 @@ public class Creature {
 			}
 		}
 	}
-
-	void defecate() {
-	}
-    
-	/*
+	
 	// ///////////////////////
 	// ////////////////////////////////////////////////////////////
 	// MÉTODOS DE DECISÕES.
 	void walkAlone() {
-		if (decision.move) {
+		if (decision.isMoving()) {
 			bodyCopy.move();
 		}
 	}
 
 	void walkTogheter(ArrayList<Creature> creatures) {
-		if (decision.moveTogheter) {
+		if (decision.isMovingTogheter()) {
 			bodyCopy.flock(creatures);
 		}
 	}
 
 	void stop() {
-		if (decision.move == false) {
+		if (decision.isMoving() == false) {
 			bodyCopy.stop();
 		}
 	}
 
 	public void rest() {
 		float amount = 100;
-		if (decision.rest) {
+		if (decision.isResting()) {
 			amount -= 100;
 		}
 		if (amount == 0) {
 			// TODO: actions here.
 		}
 	}
-*/
+	
+	public void eat(){
+		if(decision.isEating()){
+			//TODO: actions
+		}
+	}
+	
+	public void escape(){
+		if(decision.isEscaping()){
+			//TODO: actions
+		}
+	}
+	
+	public void follow(){
+		if(decision.isFolowing()){
+			//TODO: actions
+		}
+	}
+	
+	public void attack(){
+		if(decision.isAttacking()){
+			//TODO: actions
+		}
+	}
+	
+	public void copulate(){
+		if(decision.isCopulating()){
+			//TODO: actions
+		}
+	}
+	
+	public void defecate(){
+		if(decision.isDefecating()){
+			//TODO: actions
+		}
+	}
+	
+	public void play(){
+		if(decision.isPlaying()){
+			//TODO: actions
+		}
+	}
+
 	// se outro é predator
 	public void beHunted(ArrayList<Creature> creatures) {
 		for (Creature other : creatures) {
@@ -340,7 +385,8 @@ public class Creature {
 			}
 		}
 	}
-
+	
+	//TODO: método melhor de briga
 	public void fight(Creature other) {
 		float r = p.random(0, 1);
 		if (r < 5) { // substituir por stregth
@@ -353,6 +399,7 @@ public class Creature {
 	// ////////////////////////////////////////////////////////////////
 
 	// MÉTODOS DE PROCRIAÇÃO
+	// TODO: métodos de geração (por gestação, ovos etc)
 	public Creature copulate(ArrayList<Creature> creatures) {
 		Creature c = null;
 		for (Creature other : creatures) {
@@ -427,7 +474,8 @@ public class Creature {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////////
-
+	
+	//TODO
 	public void die() {
 		/*
 		 * if(life<0){ castRemoveMe(); }
