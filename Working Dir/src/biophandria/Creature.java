@@ -15,7 +15,6 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 package biophandria;
 
 import gestalt.G;
@@ -29,18 +28,18 @@ import processing.core.PVector;
 import mathematik.*;
 
 /*
-//TODO:
-    // UTILIZAR MAIS DE UM "BRAIN" PARA SEPARAR FUNCIONALIDADES
-	// movementCortex = new Brain(dna);
-	// socialCortex = new Brain(dna);
-	// enviromentCortex = new Brain(dna);
+ //TODO:
+ // UTILIZAR MAIS DE UM "BRAIN" PARA SEPARAR FUNCIONALIDADES
+ // movementCortex = new Brain(dna);
+ // socialCortex = new Brain(dna);
+ // enviromentCortex = new Brain(dna);
  */
 public class Creature {
 	PApplet p;
-	
+
 	AnimatorRenderer r;
 	G g;
-	
+
 	public PVector loc;
 	public PVector acc;
 	public PVector vel;
@@ -49,9 +48,12 @@ public class Creature {
 							// mínimo: cabeça,torax e órgãos vitais.
 	private DNA dna;// toda criatura tem suas características herdadas.
 	private Brain brain;
-	
-	Decision decision;
-	ArrayList<Decision> otherDecision;
+	private ArrayList<Creature> neighbords = new ArrayList<Creature>();
+	private ArrayList<Creature> nearCreatures = new ArrayList<Creature>();
+
+	private Decision decision;
+	private ArrayList<Decision> neighDecision = new ArrayList<Decision>();
+	private ArrayList<Decision> nearDecision = new ArrayList<Decision>();;
 
 	private int brainInput;
 	private int brainHidden;
@@ -72,7 +74,7 @@ public class Creature {
 	private boolean haveLeg;// pernas,pé,barbatanas,rabo?
 	private boolean haveReproductive;// aparelho reprodutor?
 
-	//private boolean haveShape;// carrega shape
+	// private boolean haveShape;// carrega shape
 
 	private boolean isPredator; // boolean para identificar predadores
 	private boolean isHunting;
@@ -83,16 +85,19 @@ public class Creature {
 	// float fitness;
 
 	private int id;
-	
+
 	CreatureDrawer creatureDrawer;
 	
+	public int myHash;
 	// SEM DNA VVVVVV
-	public Creature(PApplet _p,int _id, PVector _loc, boolean _mouth, boolean _eye,
-			boolean _ear, boolean _nose, boolean _hand, boolean _leg,
-			boolean _reproductive, boolean _isPredator) {
+	public Creature(PApplet _p, int _id, PVector _loc, boolean _mouth,
+			boolean _eye, boolean _ear, boolean _nose, boolean _hand,
+			boolean _leg, boolean _reproductive, boolean _isPredator) {
 		
+		
+		myHash = this.hashCode();
 		p = _p;
-		
+
 		id = _id;
 		isPredator = _isPredator;
 
@@ -111,7 +116,7 @@ public class Creature {
 		brainInput = p.round(dna.getGene(0) * 100);
 		brainHidden = p.round(dna.getGene(1) * 100);
 		brainOutput = p.round(dna.getGene(2) * 100);
-		//println("input: " + brainHidden);
+		// println("input: " + brainHidden);
 
 		// muitas das capacidades do cérebro são herdadas pelo dna
 		// UTILIZAR MAIS DE UM "BRAIN" PARA SEPARAR FUNCIONALIDADES
@@ -129,23 +134,24 @@ public class Creature {
 		haveReproductive = _reproductive;
 
 		decision = new Decision();
-		otherDecision = new ArrayList<Decision>();
 
 		// //toda criatura tem um corpo físico com habilidades de movimento
-		bodyCopy = new Body(p, dna, loc, vel, acc, id);
-		creatureDrawer = new CreatureDrawer(p,dna, loc, vel);
+		bodyCopy = new Body(p, dna, loc, vel, acc, myHash);
+		creatureDrawer = new CreatureDrawer(p, dna, loc, vel);
 	}
 
 	// ////////////
 	// ///////////
 	// //////////
 	// COM DNA VVVVVVVV//
-	public Creature(PApplet _p,DNA _dna, int _id, PVector _loc, boolean _mouth, boolean _eye,
-			boolean _ear, boolean _nose, boolean _hand, boolean _leg,
-			boolean _reproductive, boolean _isPredator) {
+	public Creature(PApplet _p, DNA _dna, int _id, PVector _loc,
+			boolean _mouth, boolean _eye, boolean _ear, boolean _nose,
+			boolean _hand, boolean _leg, boolean _reproductive,
+			boolean _isPredator) {
 		
+		myHash = this.hashCode();
 		p = _p;
-		
+
 		id = _id;
 		isPredator = _isPredator;
 
@@ -162,7 +168,7 @@ public class Creature {
 		brainInput = (int) dna.getGene(0) * 100;
 		brainHidden = (int) dna.getGene(1) * 100;
 		brainOutput = (int) dna.getGene(2) * 100;
-		//println("input: " + brainHidden);
+		// println("input: " + brainHidden);
 
 		// muitas das capacidades do cérebro são herdadas pelo dna
 		// UTILIZAR MAIS DE UM "BRAIN" PARA SEPARAR FUNCIONALIDADES
@@ -179,14 +185,13 @@ public class Creature {
 		haveLeg = _leg;
 		haveReproductive = _reproductive;
 
-		//haveShape = false;
+		// haveShape = false;
 
 		decision = new Decision();
-		otherDecision = new ArrayList<Decision>();
 
 		// //toda criatura tem um corpo físico
-		bodyCopy = new Body(p, dna, loc, vel, acc, id);
-		creatureDrawer = new CreatureDrawer(p,dna, loc, vel);
+		bodyCopy = new Body(p, dna, loc, vel, acc, myHash);
+		creatureDrawer = new CreatureDrawer(p, dna, loc, vel);
 	}
 
 	// ///////
@@ -194,15 +199,18 @@ public class Creature {
 	// //////////////////////
 	// ///////////////////////////////////////////////////////////////
 
-	//////////////////////////////////////////////////////////////////
-	//GESTALT METHOD
-	public Creature(PApplet _p, AnimatorRenderer _r, G _g,int _id, PVector _loc, boolean _mouth, boolean _eye,
-			boolean _ear, boolean _nose, boolean _hand, boolean _leg,
-			boolean _reproductive, boolean _isPredator) {
+	// ////////////////////////////////////////////////////////////////
+	// GESTALT METHOD
+	public Creature(PApplet _p, AnimatorRenderer _r, G _g, int _id,
+			PVector _loc, boolean _mouth, boolean _eye, boolean _ear,
+			boolean _nose, boolean _hand, boolean _leg, boolean _reproductive,
+			boolean _isPredator) {
+		
+		myHash = this.hashCode();
 		p = _p;
 		r = _r;
 		g = _g;
-		
+
 		id = _id;
 		isPredator = _isPredator;
 
@@ -221,7 +229,7 @@ public class Creature {
 		brainInput = p.round(dna.getGene(0) * 100);
 		brainHidden = p.round(dna.getGene(1) * 100);
 		brainOutput = p.round(dna.getGene(2) * 100);
-		//println("input: " + brainHidden);
+		// println("input: " + brainHidden);
 
 		// muitas das capacidades do cérebro são herdadas pelo dna
 		// UTILIZAR MAIS DE UM "BRAIN" PARA SEPARAR FUNCIONALIDADES
@@ -239,43 +247,62 @@ public class Creature {
 		haveReproductive = _reproductive;
 
 		decision = new Decision();
-		otherDecision = new ArrayList<Decision>();
 
 		// //toda criatura tem um corpo físico com habilidades de movimento
-		bodyCopy = new Body(p, dna, loc, vel, acc, id);
-		creatureDrawer = new CreatureDrawer(p,r,g,dna, loc, vel);
+		bodyCopy = new Body(p, dna, loc, vel, acc, myHash);
+		creatureDrawer = new CreatureDrawer(p, r, g, dna, loc, vel);
 	}
-	
-	
+
 	public void run(ArrayList<Creature> creatures) {
 		loc = bodyCopy.loc;
 		vel = bodyCopy.vel;
 		acc = bodyCopy.acc;
-		
-		bodyCopy.run(creatures);
 
-		beHunted(creatures);
-		if (isPredator && hungry < 3) {
-			isHunting = true;
-		} else {
-			isHunting = false;
-		}
-		// println(relativeness(creatures,4));
+		decision.setMove(true);
+		decision.setMoveTogheter(true);
+		
+		
+		bodyCopy.addNearCreatures(creatures);
+		bodyCopy.removeNearCreatures();
+		bodyCopy.addNeighbord(creatures);
+		bodyCopy.removeNeighbord();
+
+		setNearCreatures(bodyCopy);
+		setNeighbords(bodyCopy);
+		setArrayNearDecisions();
+		setArrayNeighbordsDecisions();
+
+		action();
+		
+		/*
+		 * bodyCopy.run(creatures);
+		 * 
+		 * beHunted(creatures); if (isPredator && hungry < 3) { isHunting =
+		 * true; } else { isHunting = false; } //
+		 * println(relativeness(creatures,4));
+		 */
 	}
 
 	// /sem shape
 	public void render() {
-		//bodyCopy.render();
-		creatureDrawer.render(loc,vel);
-	}
-	
-	public void glRender() {
-		//bodyCopy.render();
-		creatureDrawer.glRender(loc,vel);
+		// bodyCopy.render();
+		creatureDrawer.render(loc, vel);
 	}
 
+	public void glRender() {
+		// bodyCopy.render();
+		creatureDrawer.glRender(loc, vel);
+	}
+
+	// ACTIONS
 	// TODO: implementar métodos para ações comportamentais.
 	void action() {
+		//TODO: em vez de utilizar o método "flock", utilizar os sub-métodos (align, sep e cohe).
+		walkAlone();
+		walkTogheter(nearCreatures);
+		walkTogheterNeigh(neighbords);
+		//System.out.println(neighbords.size() + "  id: " + getId() + "  hashCode: " + bodyCopy.hashCode());
+
 	}
 
 	// TODO: acções baseadas nos outputs da rede neural.
@@ -297,77 +324,123 @@ public class Creature {
 			}
 		}
 	}
-	
+
 	// ///////////////////////
 	// ////////////////////////////////////////////////////////////
 	// MÉTODOS DE DECISÕES.
-	void walkAlone() {
+
+	// ///////////////////////////
+	// neigh
+	public void setNeighbords(Body b) {
+		neighbords = b.getNeighbords();
+	}
+
+	public void setArrayNeighbordsDecisions() {
+		neighDecision = getOtherDecisions(neighbords);
+	}
+
+	// ////////////////////////////
+	// near
+
+	public void setNearCreatures(Body b) {
+		nearCreatures = b.getNearCreatures();
+	}
+
+	public void setArrayNearDecisions() {
+		nearDecision = getOtherDecisions(nearCreatures);
+	}
+
+	// ////////////////////////////
+	public Decision getMyDecisions() {
+		return decision;
+	}
+
+	public ArrayList<Decision> getOtherDecisions(ArrayList<Creature> other) {
+		ArrayList<Decision> toReturn = new ArrayList<Decision>();
+		for (Creature c : other) {
+			toReturn.add(c.getMyDecisions());
+		}
+		return toReturn;
+	}
+
+	// //////////////////////////////
+
+	// THE ACTIONS
+	public void walkAlone() {
 		if (decision.isMoving()) {
 			bodyCopy.move();
 		}
 	}
 
-	void walkTogheter(ArrayList<Creature> creatures) {
+	public void walkTogheter(ArrayList<Creature> creatures) {
 		if (decision.isMovingTogheter()) {
+			bodyCopy.flockNoNeigh(creatures);
+		}
+	}
+
+	public void walkTogheterNeigh(ArrayList<Creature> creatures) {
+		if (decision.isMovingTogheterNeigh()) {
 			bodyCopy.flock(creatures);
 		}
 	}
 
-	void stop() {
+	public void stop() {
 		if (decision.isMoving() == false) {
 			bodyCopy.stop();
 		}
 	}
 
-	public void rest() {
-		float amount = 100;
+	public void rest(float theTime) {
+		float amount = theTime;
 		if (decision.isResting()) {
-			amount -= 100;
+			amount -= 1;
 		}
-		if (amount == 0) {
+		if (amount >= 0) {
 			// TODO: actions here.
+		} else {
+			decision.setRest(false);
 		}
 	}
-	
-	public void eat(){
-		if(decision.isEating()){
-			//TODO: actions
+
+	public void eat() {
+		if (decision.isEating()) {
+			// TODO: actions
 		}
 	}
-	
-	public void escape(){
-		if(decision.isEscaping()){
-			//TODO: actions
+
+	public void escape() {
+		if (decision.isEscaping()) {
+			// TODO: actions
 		}
 	}
-	
-	public void follow(){
-		if(decision.isFolowing()){
-			//TODO: actions
+
+	public void follow() {
+		if (decision.isFolowing()) {
+			// TODO: actions
 		}
 	}
-	
-	public void attack(){
-		if(decision.isAttacking()){
-			//TODO: actions
+
+	public void attack() {
+		if (decision.isAttacking()) {
+			// TODO: actions
 		}
 	}
-	
-	public void copulate(){
-		if(decision.isCopulating()){
-			//TODO: actions
+
+	public void copulate() {
+		if (decision.isCopulating()) {
+			// TODO: actions
 		}
 	}
-	
-	public void defecate(){
-		if(decision.isDefecating()){
-			//TODO: actions
+
+	public void defecate() {
+		if (decision.isDefecating()) {
+			// TODO: actions
 		}
 	}
-	
-	public void play(){
-		if(decision.isPlaying()){
-			//TODO: actions
+
+	public void play() {
+		if (decision.isPlaying()) {
+			// TODO: actions
 		}
 	}
 
@@ -385,8 +458,8 @@ public class Creature {
 			}
 		}
 	}
-	
-	//TODO: método melhor de briga
+
+	// TODO: método melhor de briga
 	public void fight(Creature other) {
 		float r = p.random(0, 1);
 		if (r < 5) { // substituir por stregth
@@ -457,8 +530,8 @@ public class Creature {
 		brain.setInput(0, inOne);
 		brain.setInput(1, inTwo);
 		brain.feedForward();
-		//p.println(id + ": " + "output 0   " + brain.getOutput(0));
-		//p.println(id + ": " + "output 1   " + brain.getOutput(1));
+		// p.println(id + ": " + "output 0   " + brain.getOutput(0));
+		// p.println(id + ": " + "output 1   " + brain.getOutput(1));
 	}
 
 	/*
@@ -474,8 +547,8 @@ public class Creature {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO
+
+	// TODO
 	public void die() {
 		/*
 		 * if(life<0){ castRemoveMe(); }
@@ -530,5 +603,11 @@ public class Creature {
 
 	int getId() {
 		return id;
+	}
+	
+	public Vector3f getV3fLoc(){
+		Vector3f v = new Vector3f();
+		v.set(loc.x, loc.y, loc.z);
+		return v;
 	}
 }

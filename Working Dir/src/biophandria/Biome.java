@@ -19,11 +19,19 @@
 package biophandria;
 
 import gestalt.G;
+import gestalt.context.GLContext;
 import gestalt.render.AnimatorRenderer;
+import gestalt.shape.AbstractDrawable;
+import gestalt.shape.Line;
 
 import mathematik.Random;
+import mathematik.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
+
+import javax.media.opengl.GL;
 
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -145,21 +153,37 @@ public class Biome {
 		 * //Creature c =(Creature) creatures.get(i); c.run(creatures); //
 		 * println(c.loc.x); }
 		 */
-
-		for (int i = 0; i < creatures.size(); i++) {
+		ListIterator clitr = creatures.listIterator();
+		ListIterator flitr = foods.listIterator();
+		
+		while(clitr.hasNext()){
+			Creature c = (Creature) clitr.next();
+			c.run(creatures);
+			if(c.health < 0){
+				clitr.remove();
+			}
+		}
+		
+		while(flitr.hasNext()){
+			Food f = (Food) flitr.next();
+			if(f.canRemove() == true){
+				flitr.remove();
+			}
+		}
+		/*for (int i = 0; i < creatures.size(); i++) {
 			Creature c = (Creature) creatures.get(i);
 			c.run(creatures);
 			if (c.health < 0) {
 				creatures.remove(i);
 			}
-		}
-
-		for (int i = 0; i < foods.size(); i++) {
+		}*/
+		
+		/*for (int i = 0; i < foods.size(); i++) {
 			Food f = (Food) foods.get(i);
 			if (f.canRemove() == true) {
 				foods.remove(i);
 			}
-		}
+		}*/
 
 		// println(creatures.size());
 	}
@@ -168,23 +192,71 @@ public class Biome {
 	public void render() {
 
 		// interactor.render();
+		/*
+		ListIterator clitr = creatures.listIterator();
+		ListIterator flitr = foods.listIterator();
+		
+		while(clitr.hasNext()){
+			Creature c = (Creature) clitr.next();
+			c.render();
+			
+			ListIterator c2litr = c.getBody().getNeighbords().listIterator();
+			while(c2litr.hasNext()){
+			Creature c2 = (Creature) c2litr.next();
+			float x1 = c.getBody().loc.x;
+			float y1 = c.getBody().loc.y;
+			float x2 = c.getBody().loc.x;
+			float y2 = c.getBody().loc.y;
+			p.stroke(255);
+			p.line(x1,y1,x2,y2);
+			}
+			
 
-		for (Creature c : creatures) {
+		}
+		*/
+		for(int i = 0; i<creatures.size(); i++){
+			Creature c = (Creature) creatures.get(i);
+			PVector loc1 = c.getBody().loc;
+			c.render();
+
+		}
+		/*
+		while(flitr.hasNext()){
+			Food f = (Food) flitr.next();
+			f.render();
+		}*/
+		
+		
+		/*for (Creature c : creatures) {
 			c.render();
 		}
 		for (Food f : foods) {
 			f.render();
-		}
+		}*/
 	}
 
 	// /////////////////////////////////////////////
 	// GLRENDERERS
-	public void glRender() {
-		for (Creature c : creatures) {
+	public void glRender(AnimatorRenderer r) {
+		Iterator itr = creatures.iterator();
+		/*while(itr.hasNext()){
+			Creature c = (Creature) itr.next();
 			c.glRender();
+		}*/
+		ListIterator litr = creatures.listIterator();
+		while(litr.hasNext()){
+			Creature c = (Creature) litr.next();
+			//int i = litr.previousIndex();
+			c.glRender();
+			
 		}
+		
+		/*for (int i = 0; i<creatures.size(); i++) {
+			Creature c = creatures.get(i);
+			c.glRender();
+		}*/
 	}
-
+	
 	// //////////////////////////////////////////////
 	public void addCreature() {
 	}

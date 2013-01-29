@@ -21,6 +21,7 @@ package biophandria;
 
 import gestalt.G;
 import gestalt.render.AnimatorRenderer;
+import gestalt.render.Drawable;
 import gestalt.shape.Plane;
 import processing.core.PApplet;
 
@@ -36,15 +37,17 @@ public class MainGestMode extends AnimatorRenderer {
 	Plane _myPlane;
 	
 	public void setup() {
+
 		p = new PApplet();
 		bio = new Biome(p,this,g);
+
 		camera().setMode(CAMERA_MODE_LOOK_AT);
 		createPlane();
 	}
 
 	public void loop(final float theDeltaTime) {
 		bio.run();
-		bio.glRender();
+		bio.glRender(this);
 		moveCamera(theDeltaTime);
 	}
 	

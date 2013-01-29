@@ -17,20 +17,24 @@
 
 package biophandria;
 
-	/*
-	 *  métodos atuais de movimentação:
-	 *  	1: flock comum
-	 *  	2: flock por visinhos
-	 *  
-	 *  métodos pretendidos
-	 *  	1: caçar/movimentar sozinho
-	 *  	2: caçar/movimentar em grupos pequenos
-	 *   	3: decisões baseada em grupo
-	 *   	4: decisões baseada em liderança
-	 * 		5: movimentação causada pelo ambiente (ex: pólem)
-	 */
+/*
+ *  métodos atuais de movimentação:
+ *  	1: flock comum
+ *  	2: flock por visinhos
+ *  
+ *  métodos pretendidos
+ *  	1: caçar/movimentar sozinho
+ *  	2: caçar/movimentar em grupos pequenos
+ *   	3: decisões baseada em grupo
+ *   	4: decisões baseada em liderança
+ * 		5: movimentação causada pelo ambiente (ex: pólem)
+ */
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
+
+import mathematik.Vector3f;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -66,12 +70,16 @@ public class Body {
 
 	private boolean lowDensityFlock = true;
 
+	private ArrayList<Creature> nearCreatures = new ArrayList<Creature>();
+	private int countNearCreatures = 0;
+
 	private ArrayList<Creature> neighbords = new ArrayList<Creature>();
 	private int countNeighbords = 0;
 	private float neighAddDist = 500;
 
 	private DNA dna;
-
+	
+	public int myHash;
 	/* /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 	/*                                                                         */
 	/* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -80,7 +88,7 @@ public class Body {
 			int _id) {
 		p = _p;
 		// neighbords.add(new Creature());
-		id = _id;
+		myHash = _id;
 
 		dna = _dna;
 
@@ -165,7 +173,8 @@ public class Body {
 	// MAIN METHODO TO RUN METHODOS
 
 	// RUN
-	// TODO: passar métodos para decisões na classe Creature que será controlado pela classe Decision
+	// TODO: passar métodos para decisões na classe Creature que será controlado
+	// pela classe Decision
 	// TODO: implementar outros métodos de movimentação
 	public void run(ArrayList<Creature> creatures) {
 		// TODO: criat métodos para debug visual
@@ -194,7 +203,7 @@ public class Body {
 	/*                                                                         */
 	/* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 	// MÉTODOS DE MOVIMENTAÇÃO
-	
+
 	// APPLYFORCE
 	// TODO: Adicionar peso (acc=f/m);
 	private void applyForce(PVector force) {
@@ -210,7 +219,7 @@ public class Body {
 		loc.add(vel);
 
 		PVector wan = wander();
-		wan.mult(2);
+		wan.mult(4);
 
 		applyForce(wan);
 
@@ -241,6 +250,39 @@ public class Body {
 
 		// PVector coh = cohesion(creatures);
 		PVector coh = cohesionByNeighbord();
+
+		PVector wan = wander();
+		// PVector fle = flee();
+
+		sep.mult(swt);
+		ali.mult(awt);
+		coh.mult(cwt);
+		// wan.mult(2);
+		// fle.mult(10);
+
+		applyForce(sep);
+		applyForce(ali);
+		applyForce(coh);
+		// applyForce(wan);
+
+		// TODO: fazer com que os agentes reajam com métodos "separation"
+		// mudando a densidade do enxame.
+
+		if (p.keyPressed && p.key == 'f') {
+			// applyForce(fle);
+		}
+	}
+
+	// FLOCK
+	public void flockNoNeigh(ArrayList<Creature> creatures) {
+
+		PVector sep = separate(creatures);
+
+		PVector ali = align(creatures);
+		// PVector ali = alignByNeighbord();
+
+		PVector coh = cohesion(creatures);
+		// PVector coh = cohesionByNeighbord();
 
 		PVector wan = wander();
 		// PVector fle = flee();
@@ -334,6 +376,7 @@ public class Body {
 	/*                                                                         */
 	/* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 	// SEPARATE, ALIGN & COHESION (3 BASIV RULES OF FLOCK)
+	// TODO: criar método de "criaturas que estão perto".
 
 	// SEPARATE
 	// regra de separação
@@ -388,8 +431,6 @@ public class Body {
 			if (((d > 0) && (d < neighbordist))) {
 				steer.add(other.vel);
 				count++;
-				p.stroke(255);
-				p.line(loc.x, loc.y, other.loc.x, other.loc.y);
 			}
 		}
 		if (count > 0) {
@@ -482,7 +523,7 @@ public class Body {
 	/*                                                                         */
 	/* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 	// WANDER > THIS GIVE MOVE() A WANDERING MOVEMENT
-	
+
 	public PVector wander() {
 		// float wanderR = 50; // Radius for our "wander circle"
 		// float wanderD = 180; // Distance for our "wander circle"
@@ -528,41 +569,107 @@ public class Body {
 	public DNA getGenes() {
 		return dna;
 	}
+
 	/* /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 	/*                                                                         */
 	/* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
-	// NEIGHBORDS ADD AND REMOVE > BASICALY A ARRAYLIST THA HOLD NEAR CREATURES
-	
-	// ADD NEIGHBORD
-	private void addNeighbord(ArrayList<Creature> creatures) {
-		float neighbordist = neighAddDist;
-		int count = 0;
-		for (Creature other : creatures) {
+	// NEAR CREATURES
+
+	// ADD NEAR CREATURES
+	// TODO: implementar variável de distancia
+	public void addNearCreatures(ArrayList<Creature> creatures) {
+
+		
+		Iterator<Creature> li = creatures.listIterator();
+		
+		while (li.hasNext()) {
+			Creature other =  li.next();
 			float d = PVector.dist(loc, other.loc);
 
-			if (((d > 0) && (d < neighbordist))) {
-				if ((countNeighbords == 0)) {
-					neighbords.add(other);
-					countNeighbords++;
-					// count++;
-				} else if (other != neighbords.get(count)
-						&& (countNeighbords < 10)) {
-					neighbords.add(other);
-					countNeighbords++;
-					count++;
+			if (((d > 0) && (d < 300))) {
+				if ((countNearCreatures <= 0)) {
+					nearCreatures.add(other);
+					countNearCreatures++;
+
+				} else if (!(nearCreatures.contains(other)) && countNearCreatures < creatures.size()*2) {
+					nearCreatures.add(other);
+					countNearCreatures++;
+					
 				}
 			}
 		}
 	}
+
+	public void removeNearCreatures() {
+		for (int i = 0; i < nearCreatures.size(); i++) {
+			Creature neigh = (Creature) nearCreatures.get(i);
+			float d = PVector.dist(neigh.loc, loc);
+			if (d > 300) {
+				countNearCreatures--;
+				nearCreatures.remove(i);
+			}
+		}
+	}
+
+	public ArrayList<Creature> getNearCreatures() {
+		return nearCreatures;
+	}
+
+	/* /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
+	/*                                                                         */
+	/* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
+	// NEIGHBORDS ADD AND REMOVE > BASICALY A ARRAYLIST THA HOLD NEAR CREATURES
+
 	// ADD NEIGHBORD
-	private void removeNeighbord() {
+
+	public void addNeighbord(ArrayList<Creature> creatures) {
+		float neighbordist = 200;
+		int count = 0;
+		
+		Iterator<Creature> list = creatures.listIterator();
+		
+		while(list.hasNext()){
+			Creature other = list.next();
+			float d = PVector.dist(loc, other.loc);
+			if( (d > 0) && (d < neighbordist)){
+				if(countNeighbords <= 0){
+					neighbords.add(other);
+					countNeighbords++;
+				}else if(!neighbords.contains(other) && countNeighbords < 10){
+					neighbords.add(other);
+					countNeighbords++;
+				}
+			}
+			
+		}
+
+	}
+	
+	// GET NEIGHBORDS
+	public ArrayList<Creature> getNeighbords() {
+		return neighbords;
+	}
+
+	// ADD NEIGHBORD
+	public void removeNeighbord() {
 		for (int i = 0; i < neighbords.size(); i++) {
 			Creature neigh = (Creature) neighbords.get(i);
 			float d = PVector.dist(neigh.loc, loc);
-			if (d > 1100) {
+			if (d > 200) {
 				countNeighbords--;
 				neighbords.remove(i);
 			}
 		}
 	}
+	
+	
+	
+	public Vector3f getV3fLoc(){
+		Vector3f v = new Vector3f();
+		v.set(loc.x, loc.y, loc.z);
+		return v;
+	}
+	
+	
+	
 }

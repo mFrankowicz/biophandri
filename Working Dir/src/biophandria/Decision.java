@@ -13,6 +13,8 @@ public class Decision {
 	private boolean move;
 
 	private boolean moveTogheter;
+	
+	private boolean moveTogheterNeigh;
 
 	private boolean rest; // diferente de parar!
 
@@ -31,38 +33,26 @@ public class Decision {
 	private boolean play;
 	
 	
-	public Decision(boolean move, boolean moveTogheter, boolean rest,
-			boolean eat, boolean escape, boolean folow, boolean attack,
-			boolean copulate, boolean defecate, boolean play) {
-		this.move = move;
-		this.moveTogheter = moveTogheter;
-		this.rest = rest;
-		this.eat = eat;
-		this.escape = escape;
-		this.folow = folow;
-		this.attack = attack;
-		this.copulate = copulate;
-		this.defecate = defecate;
-		this.play = play;
-	}
 	
 	public Decision(boolean[] decisions) {
 		this.move = decisions[0];
 		this.moveTogheter = decisions[1];
-		this.rest = decisions[2];
-		this.eat = decisions[3];
-		this.escape = decisions[4];
-		this.folow = decisions[5];
-		this.attack = decisions[6];
-		this.copulate = decisions[7];
-		this.defecate = decisions[8];
-		this.play = decisions[9];
+		this.moveTogheterNeigh = decisions[2];
+		this.rest = decisions[3];
+		this.eat = decisions[4];
+		this.escape = decisions[5];
+		this.folow = decisions[6];
+		this.attack = decisions[7];
+		this.copulate = decisions[8];
+		this.defecate = decisions[9];
+		this.play = decisions[10];
 	}
 
 	public Decision() {
 
 		move = false;
 		moveTogheter = false;
+		moveTogheterNeigh = false;
 		rest = false;
 		eat = false;
 		escape = false;
@@ -84,6 +74,10 @@ public class Decision {
 	public boolean isMovingTogheter() {
 		return moveTogheter;
 	}
+	
+	public boolean isMovingTogheterNeigh() {
+		return moveTogheterNeigh;
+	}	
 
 	public boolean isResting() {
 		return rest;
@@ -126,6 +120,10 @@ public class Decision {
 	public void setMoveTogheter(boolean moveTogheter) {
 		this.moveTogheter = moveTogheter;
 	}
+	
+	public void setMoveTogheterNeigh(boolean moveTogheterNeigh) {
+		this.moveTogheterNeigh = moveTogheterNeigh;
+	}	
 
 	public void setRest(boolean rest) {
 		this.rest = rest;
