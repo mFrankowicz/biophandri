@@ -57,7 +57,7 @@ public class TestModelLoader
         ModelLoaderOBJ.VERBOSE = false;
         ModelLoaderOBJ.PRIMITIVE = MESH_TRIANGLES;
         ModelData[] myModelData = ModelLoaderOBJ.getModelDataAsDiscreteModels(Resource.getStream(
-            "demo/common/two_models.obj"));
+            "resource/data/demo/common/two_models.obj"));
         _myModels = new Model[myModelData.length];
         for (int i = 0; i < myModelData.length; i++) {
             /* get mesh */
@@ -80,7 +80,7 @@ public class TestModelLoader
     public void createOneModel() {
         ModelLoaderOBJ.VERBOSE = false;
         ModelLoaderOBJ.PRIMITIVE = MESH_TRIANGLES;
-        ModelData myModelData = ModelLoaderOBJ.getModelData(Resource.getStream("demo/common/two_models.obj"));
+        ModelData myModelData = ModelLoaderOBJ.getModelData(Resource.getStream("resource/data/demo/common/two_models.obj"));
         Mesh myModelMesh = drawablefactory().mesh(true,
                                                   myModelData.vertices, 3,
                                                   myModelData.vertexColors, 4,

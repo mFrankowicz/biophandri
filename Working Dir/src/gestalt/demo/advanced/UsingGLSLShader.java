@@ -51,8 +51,8 @@ public class UsingGLSLShader
         bin(BIN_FRAME_SETUP).add(_myShaderManager);
 
         _myShaderProgram = _myShaderManager.createShaderProgram();
-        _myShaderManager.attachVertexShader(_myShaderProgram, Resource.getStream("demo/shader/vertex.vsh"));
-        _myShaderManager.attachFragmentShader(_myShaderProgram, Resource.getStream("demo/shader/fragment.fsh"));
+        _myShaderManager.attachVertexShader(_myShaderProgram, Resource.getStream("resource/data/demo/shader/vertex.vsh"));
+        _myShaderManager.attachFragmentShader(_myShaderProgram, Resource.getStream("resource/data/demo/shader/fragment.fsh"));
 
         int myNumberOfPlanes = 10;
         float myPlaneSize = 25;

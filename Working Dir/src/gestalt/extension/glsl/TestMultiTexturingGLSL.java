@@ -48,8 +48,8 @@ public class TestMultiTexturingGLSL
         bin(BIN_FRAME_SETUP).add(myShaderManager);
 
         ShaderProgram myShaderProgram = myShaderManager.createShaderProgram();
-        myShaderManager.attachVertexShader(myShaderProgram, Resource.getStream("demo/shader/multitex.vsh"));
-        myShaderManager.attachFragmentShader(myShaderProgram, Resource.getStream("demo/shader/multitex.fsh"));
+        myShaderManager.attachVertexShader(myShaderProgram, Resource.getStream("resource/data/demo/shader/multitex.vsh"));
+        myShaderManager.attachFragmentShader(myShaderProgram, Resource.getStream("resource/data/demo/shader/multitex.fsh"));
 
         ShaderMaterial _myShaderMaterial = new ShaderMaterial(myShaderManager, myShaderProgram);
 
@@ -58,12 +58,12 @@ public class TestMultiTexturingGLSL
 
         /* create a texture */
         TexturePlugin myTexture0 = drawablefactory().texture();
-        myTexture0.load(Bitmaps.getBitmap(Resource.getStream("demo/common/stripes.png")));
+        myTexture0.load(Bitmaps.getBitmap(Resource.getStream("resource/data/demo/common/stripes.png")));
         myTexture0.setTextureUnit(GL.GL_TEXTURE0);
 
         /* create a texture */
         TexturePlugin myTexture1 = drawablefactory().texture();
-        myTexture1.load(Bitmaps.getBitmap(Resource.getStream("demo/common/mask256.png")));
+        myTexture1.load(Bitmaps.getBitmap(Resource.getStream("resource/data/demo/common/mask256.png")));
         myTexture1.setTextureUnit(GL.GL_TEXTURE1);
 
         /* set the texture in the material of the shape */

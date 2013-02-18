@@ -93,8 +93,8 @@ public class UsingGLSLImageProcessing
         /* add shader material to plane */
         _myBlur = new JoglGLSLGaussianBlur(myShaderManager,
                                            myShaderProgram,
-                                           Resource.getStream("demo/shader/simple.vsh"),
-                                           Resource.getStream("demo/shader/blur.fsh"),
+                                           Resource.getStream("resource/data/demo/shader/simple.vsh"),
+                                           Resource.getStream("resource/data/demo/shader/blur.fsh"),
                                            _myPlane.material().texture().getPixelHeight());
         _myPlane.material().addPlugin(_myBlur);
     }
@@ -108,7 +108,7 @@ public class UsingGLSLImageProcessing
 
         /* create texture */
         TexturePlugin myTexture = drawablefactory().texture();
-        myTexture.load(Bitmaps.getBitmap(Resource.getStream("demo/common/cube.png")));
+        myTexture.load(Bitmaps.getBitmap(Resource.getStream("resource/data/demo/common/cube.png")));
         _myCube.material().addPlugin(myTexture);
         _myCube.material().color4f().set(1, 0, 0);
         bin(BIN_3D).add(_myCube);

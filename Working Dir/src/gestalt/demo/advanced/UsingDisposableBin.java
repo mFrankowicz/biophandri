@@ -40,7 +40,7 @@ public class UsingDisposableBin
         displaycapabilities().backgroundcolor.set(0.2f);
 
         g = new DisposableBin();
-        g.addTextureToPlanePrimitve(Bitmaps.getBitmap(Resource.getStream("demo/common/particle-round.png")));
+        g.addTextureToPlanePrimitve(Bitmaps.getBitmap(Resource.getStream("resource/data/demo/common/particle-round.png")));
         bin(BIN_3D).add(g);
     }
 

@@ -259,7 +259,7 @@ public class Creature {
 		acc = bodyCopy.acc;
 
 		decision.setMove(true);
-		decision.setMoveTogheter(true);
+		decision.setMoveTogheterNeigh(true);
 		
 		
 		bodyCopy.addNearCreatures(creatures);

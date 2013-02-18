@@ -60,7 +60,7 @@ public class UsingFloatDataBuffers
         final ShaderManager sm = drawablefactory().extensions().shadermanager();
         bin(BIN_FRAME_SETUP).add(sm);
         final ShaderProgram sp = sm.createShaderProgram();
-        sm.attachFragmentShader(sp, Resource.getStream("demo/shader/FloatDataBuffers.fs"));
+        sm.attachFragmentShader(sp, Resource.getStream("resource/data/demo/shader/FloatDataBuffers.fs"));
 
         final ShaderMaterial myShaderMaterial = new ShaderMaterial(sm, sp) {
 

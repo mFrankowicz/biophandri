@@ -81,7 +81,7 @@ public class UsingGlowWithGLSLandFBOs
         _myObject.mesh().material().color4f().set(80 / 255f, 170 / 255f, 255 / 255f);
 
         TexturePlugin myTexture = drawablefactory().texture();
-        myTexture.load(Bitmaps.getBitmap(Resource.getStream("demo/common/stripes.png")));
+        myTexture.load(Bitmaps.getBitmap(Resource.getStream("resource/data/demo/common/stripes.png")));
         _myObject.mesh().material().addPlugin(myTexture);
 
         bin(BIN_3D).add(_myObject);
@@ -100,8 +100,8 @@ public class UsingGlowWithGLSLandFBOs
         /* add shader material to plane */
         _myBlur = new JoglGLSLGaussianBlur(myShaderManager,
                                            myShaderProgram,
-                                           Resource.getStream("demo/shader/simple.vsh"),
-                                           Resource.getStream("demo/shader/blur.fsh"),
+                                           Resource.getStream("resource/data/demo/shader/simple.vsh"),
+                                           Resource.getStream("resource/data/demo/shader/blur.fsh"),
                                            myGlowPlane.material().texture().getPixelHeight());
         myGlowPlane.material().addPlugin(_myBlur);
     }
@@ -109,7 +109,7 @@ public class UsingGlowWithGLSLandFBOs
 
     private Model createModel() {
         Model myModel;
-        ModelData myModelData = ModelLoaderOBJ.getModelData(Resource.getStream("demo/common/weirdobject.obj"));
+        ModelData myModelData = ModelLoaderOBJ.getModelData(Resource.getStream("resource/data/demo/common/weirdobject.obj"));
         Mesh myModelMesh = drawablefactory().mesh(true,
                                                   myModelData.vertices, 3,
                                                   myModelData.vertexColors, 4,

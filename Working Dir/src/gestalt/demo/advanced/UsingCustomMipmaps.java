@@ -47,7 +47,7 @@ public class UsingCustomMipmaps
         bin(BIN_3D).add(_myImagePlane);
 
         /* create custom mipmap texture */
-        ByteBitmap myBitmap = Bitmaps.getBitmap(Resource.getStream("demo/common/d3.png"));
+        ByteBitmap myBitmap = Bitmaps.getBitmap(Resource.getStream("resource/data/demo/common/d3.png"));
         ByteBitmap[] myBitmaps = JoglCustomMipMap.createBluredBitmapSequence(myBitmap, 10);
         TexturePlugin myImageTexture = new JoglCustomMipMap(myBitmaps, true);
         _myImagePlane.material().addTexture(myImageTexture);

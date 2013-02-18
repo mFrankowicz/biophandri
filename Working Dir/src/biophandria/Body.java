@@ -95,7 +95,7 @@ public class Body {
 		loc = _loc;
 		acc = _acc;
 		vel = _vel;
-		r = 2.0f;
+		r = 25f;
 
 		// setAttributesByDna(dna);
 
@@ -105,23 +105,23 @@ public class Body {
 		float wd = 80;
 
 		if (specieDebug == 0) {
-			setAttributes(5, 8, 5, 5, wr, wd);
+			setAttributes(5, 15, 5, 5, wr, wd);
 		}
 
 		else if (specieDebug == 1) {
-			setAttributes(5, 6, 4, 5, wr, wd);
+			setAttributes(3, 15, 4, 5, wr, wd);
 		}
 
 		else if (specieDebug == 2) {
-			setAttributes(5, 8, 3, 5, wr, wd);
+			setAttributes(4, 15, 3, 5, wr, wd);
 		}
 
 		else if (specieDebug == 3) {
-			setAttributes(5, 6, 3, 5, wr, wd);
+			setAttributes(1, 15, 3, 5, wr, wd);
 		}
 
 		else if (specieDebug == 4) {
-			setAttributes(5, 10, 4, 5, wr, wd);
+			setAttributes(4, 15, 4, 5, wr, wd);
 		}
 
 		wandertheta = 0;
